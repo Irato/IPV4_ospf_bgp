@@ -55,8 +55,44 @@ network 10.10.3.0/24 area 0.10.0.0
 line vty
 " > /etc/quagga/ospfd.conf
 
-	;;
+#########################################################
+echo "
+! -*- zebra -*-
+!
+! zebra sample configuration file
+!
+! $Id: zebra.conf.sample,v 1.1 2002/12/13 20:15:30 paul Exp $
+hostname HostA
+password reverse
+enable password reverse
+log file /var/log/quagga/zebra.log
+!
+debug zebra events
+debug zebra packet
+!
+interface enp0s3
+link-detect
+ip address 10.10.3.2/24
+ipv6 nd suppress-ra
+!
+interface lo
+!
+ip forwarding
+!
+line vty
+!
+" > /etc/quagga/zebra.conf
 
+echo "
+zebra=yes
+bgpd=no
+ospfd=yes
+opsf6d=no
+ripd=no
+ripngd=no
+isisd=no
+" > /etc/quagga/daemons
+;;
         "HostB")
 
 echo "
@@ -88,6 +124,47 @@ network 10.10.3.0/24 area 0.10.0.0
 !
 line vty
 " > /etc/quagga/ospfd.conf
+
+
+echo "
+! -*- zebra -*-
+!
+! zebra sample configuration file
+!
+hostname HostB
+password reverse
+enable password reverse
+log file /var/log/quagga/zebra.log
+!
+debug zebra events
+debug zebra packet
+!
+interface ${interface[1]}
+link-detect
+ip address 10.10.3.1/24
+ipv6 nd suppress-ra
+!
+interface ${interface[2]}
+link-detect
+ip address 10.10.2.2/24
+ipv6 nd suppress-ra
+interface lo
+!
+ip forwarding
+!
+line vty
+!
+" > /etc/quagga/zebra.conf
+
+echo "
+zebra=yes
+bgpd=no
+ospfd=yes
+opsf6d=no
+ripd=no
+ripngd=no
+isisd=no
+" > /etc/quagga/daemons
 
 	;;
 
@@ -123,6 +200,47 @@ network 10.10.2.0/24 area 0.10.0.0
 !
 line vty
 " > /etc/quagga/ospfd.conf
+
+echo "
+! -*- zebra -*-
+!
+! zebra sample configuration file
+!
+hostname HostC
+password reverse
+enable password reverse
+log file /var/log/quagga/zebra.log
+!
+debug zebra events
+debug zebra packet
+!
+interface ${interface[1]}
+link-detect
+ip address 10.10.2.1/24
+ipv6 nd suppress-ra
+!
+interface ${interface[2]}
+link-detect
+ip address 10.10.1.2/24
+ipv6 nd suppress-ra
+interface lo
+!
+ip forwarding
+!
+line vty
+!
+" > /etc/quagga/zebra.conf
+
+echo "
+zebra=yes
+bgpd=no
+ospfd=yes
+opsf6d=no
+ripd=no
+ripngd=no
+isisd=no
+" > /etc/quagga/daemons
+
 ;;
 
         "HostD")
@@ -137,9 +255,8 @@ echo "
 ! OSPFd sample configuration file
 !
 log stdout
-
-
-hostname RoteadorC
+!
+hostname RoteadorD
 password reverse
 log file /var/log/quagga/zebra.log
 log stdout
@@ -160,6 +277,45 @@ network $ipborda area 0.0.0.0
 !
 line vty
 " > /etc/quagga/ospfd.conf
+
+echo "
+! -*- zebra -*-
+!
+! zebra sample configuration file
+!
+hostname RouterD
+password zebra
+enable password zebra
+!
+debug zebra events
+debug zebra packet
+!
+interface ${interface[2]}
+link-detect
+ipv6 nd suppress-ra
+!
+interface ${interface[1]}
+link-detect
+ip address 10.10.1.1/24
+ipv6 nd suppress-ra
+! Static default route sample.
+!
+
+!
+interface lo
+link-detect
+ip address 65.0.0.1/32
+" > /etc/quagga/zebra.conf
+
+echo "
+zebra=yes
+bgpd=no
+ospfd=yes
+opsf6d=no
+ripd=no
+ripngd=no
+isisd=no
+" > /etc/quagga/daemons
         
 	;;
 	"VOLTAR")
